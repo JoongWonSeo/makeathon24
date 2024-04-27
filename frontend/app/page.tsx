@@ -14,6 +14,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { SidebarLayout } from "@/components/sidebar/layout";
 import { MD } from "@/components/base/md";
 import { Settings } from "@/components/settings";
+import { Showroom } from "@/components/showroom";
 
 export default function Home() {
   // UI state
@@ -57,7 +58,7 @@ export default function Home() {
         </div>
       }
       rightSidebar={
-        <div className="h-full">
+        <div className="h-full bg-[#FDFDFD]">
           <Chat
             history={
               messages.partial
@@ -75,7 +76,7 @@ export default function Home() {
             showSystem={showSystem}
             header={
               <>
-                <Card className="my-10 p-3 flex-none self-center max-w-lg bg-default/50 backdrop-saturate-200 shadow-md">
+                <Card className="my-10 p-3 flex-none self-center max-w-lg shadow-none bg-transparent">
                   <CardHeader className="justify-center">
                     <ChatAvatar className="mr-3 scale-125" role="assistant" />
                     <h1 className="text-xl text-primary-foreground font-bold">
@@ -85,16 +86,14 @@ export default function Home() {
                   <CardBody>
                     <MD className="leading-5">
                       {`
-I'm your assistant, I can help you with the following tasks:
-- Find an information on the internet
-- Open a link and answer questions
+I am your personal AI agent. I am happy to tell you about the latest Mercedes-Benz cars. 
 
-Additionally, you can switch the model and temperature on the sidebar.
+You can ask me anything about the cars, and I will provide you with the information you need.
                       `}
                     </MD>
                   </CardBody>
                   <CardFooter className="justify-center">
-                    <p className="text-xs text-primary/100">
+                    <p className="text-xs ">
                       Made with{" "}
                       <FaHeart className="inline-block align-text-bottom" /> by
                       Team A(sian)Intelligence
@@ -111,7 +110,7 @@ Additionally, you can switch the model and temperature on the sidebar.
       }
     >
       {/* main editor view */}
-      <div>hello im the main view</div>
+      <Showroom></Showroom>
     </SidebarLayout>
   );
 }
