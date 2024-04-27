@@ -5,7 +5,6 @@ import uvicorn
 from fastapi import FastAPI, WebSocket
 from fastapi.staticfiles import StaticFiles
 from ws_sync import Session, get_user_session, session_context
-from agentools.retrieval.db import EmbeddableDataCollection
 
 
 from .session import SessionState
@@ -18,9 +17,6 @@ sessions = {}  # {session_id: session}
 
 # websocket endpoint
 app = FastAPI()
-
-# Set a global vector db client
-# EmbeddableDataCollection.use_global_client()
 
 
 @app.get("/hello")
