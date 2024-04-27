@@ -1,0 +1,427 @@
+{
+  "$defs": {
+    "FieldCondition": {
+      "additionalProperties": false,
+      "description": "All possible payload filtering conditions",
+      "properties": {
+        "key": {
+          "description": "Payload key",
+          "title": "Key",
+          "type": "string"
+        },
+        "match": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MatchValue"
+            },
+            {
+              "$ref": "#/$defs/MatchText"
+            },
+            {
+              "$ref": "#/$defs/MatchAny"
+            },
+            {
+              "$ref": "#/$defs/MatchExcept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Check if point has field with a given value",
+          "title": "Match"
+        },
+        "range": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Range"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Check if points value lies in a given range",
+          "title": "Range"
+        },
+        "values_count": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValuesCount"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Check number of values of the field"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "title": "FieldCondition",
+      "type": "object"
+    },
+    "Filter": {
+      "additionalProperties": false,
+      "properties": {
+        "should": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/FieldCondition"
+                  },
+                  {
+                    "$ref": "#/$defs/Filter"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "At least one of those conditions should match",
+          "title": "Should"
+        },
+        "min_should": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MinShould"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "At least minimum amount of given conditions should match"
+        },
+        "must": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/FieldCondition"
+                  },
+                  {
+                    "$ref": "#/$defs/Filter"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "All conditions must match",
+          "title": "Must"
+        },
+        "must_not": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/FieldCondition"
+                  },
+                  {
+                    "$ref": "#/$defs/Filter"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "All conditions must NOT match",
+          "title": "Must Not"
+        }
+      },
+      "title": "Filter",
+      "type": "object"
+    },
+    "MatchAny": {
+      "additionalProperties": false,
+      "description": "Exact match on any of the given values",
+      "properties": {
+        "any": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Exact match on any of the given values",
+          "title": "Any"
+        }
+      },
+      "required": [
+        "any"
+      ],
+      "title": "MatchAny",
+      "type": "object"
+    },
+    "MatchExcept": {
+      "additionalProperties": false,
+      "description": "Should have at least one value not matching the any given values",
+      "properties": {
+        "except": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            }
+          ],
+          "description": "Should have at least one value not matching the any given values",
+          "title": "Except"
+        }
+      },
+      "required": [
+        "except"
+      ],
+      "title": "MatchExcept",
+      "type": "object"
+    },
+    "MatchText": {
+      "additionalProperties": false,
+      "description": "Full-text match of the strings.",
+      "properties": {
+        "text": {
+          "description": "Full-text match of the strings.",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "MatchText",
+      "type": "object"
+    },
+    "MatchValue": {
+      "additionalProperties": false,
+      "description": "Exact match of the given value",
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "Exact match of the given value",
+          "title": "Value"
+        }
+      },
+      "required": [
+        "value"
+      ],
+      "title": "MatchValue",
+      "type": "object"
+    },
+    "MinShould": {
+      "additionalProperties": false,
+      "properties": {
+        "conditions": {
+          "description": "",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FieldCondition"
+              },
+              {
+                "$ref": "#/$defs/Filter"
+              }
+            ]
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "min_count": {
+          "description": "",
+          "title": "Min Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "conditions",
+        "min_count"
+      ],
+      "title": "MinShould",
+      "type": "object"
+    },
+    "PayloadField": {
+      "additionalProperties": false,
+      "description": "Payload field",
+      "properties": {
+        "key": {
+          "description": "Payload field name",
+          "title": "Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "title": "PayloadField",
+      "type": "object"
+    },
+    "Range": {
+      "additionalProperties": false,
+      "description": "Range filter request",
+      "properties": {
+        "lt": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key &lt; range.lt",
+          "title": "Lt"
+        },
+        "gt": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key &gt; range.gt",
+          "title": "Gt"
+        },
+        "gte": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key &gt;= range.gte",
+          "title": "Gte"
+        },
+        "lte": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key &lt;= range.lte",
+          "title": "Lte"
+        }
+      },
+      "title": "Range",
+      "type": "object"
+    },
+    "ValuesCount": {
+      "additionalProperties": false,
+      "description": "Values count filter request",
+      "properties": {
+        "lt": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key.length() &lt; values_count.lt",
+          "title": "Lt"
+        },
+        "gt": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key.length() &gt; values_count.gt",
+          "title": "Gt"
+        },
+        "gte": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key.length() &gt;= values_count.gte",
+          "title": "Gte"
+        },
+        "lte": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "point.key.length() &lt;= values_count.lte",
+          "title": "Lte"
+        }
+      },
+      "title": "ValuesCount",
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/$defs/Filter"
+    }
+  ]
+}
