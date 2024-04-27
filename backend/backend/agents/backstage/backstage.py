@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from agentools.retrieval.db import EmbeddableDataCollection
 
@@ -10,9 +11,6 @@ Dealer: "{dealer}"
 Customer: "{customer}"
 """.strip()
 
-CONSTRAINT_EXTRACTOR_MODEL = "gpt-4-turbo"
-PREFERENCE_EXTRACTOR_MODEL = "gpt-4-turbo"
-
 
 class Backstage:
     """
@@ -23,14 +21,12 @@ class Backstage:
         self.product_db = product_db
 
         # agents
-        self.constraint_extractor = ConstraintExtractor(
-            model=CONSTRAINT_EXTRACTOR_MODEL,
-            product_db=product_db,
-        )
-        # self.preference_extractor = PreferenceExtractor(
-        #     model=PREFERENCE_EXTRACTOR_MODEL,
-        #     product_db=product_db,
-        # )
+        self.constraint_extractor = ConstraintExtractor(product_db=product_db)
+        # self.preference_extractor = PreferenceExtractor(product_db=product_db)
+
+        # state
+        self.recommendations = []
+        self.task = None
 
     async def append_dialog(self, dealer: str, customer: str):
         """
@@ -40,12 +36,31 @@ class Backstage:
 
         logger.info(f"Appending dialog:\n{dialog}")
 
+        self.task = asyncio.create_task(self.update_recommendations(dialog))
+
+    async def update_recommendations(self, dialog):
+        """
+        Update the recommendations based on the given dialog.
+        """
         # TODO: parallelize
         await self.constraint_extractor.extract_requirements(dialog)
         # await self.preference_extractor.extract_preferences(dialog)
 
-    async def get_recommendations(self):
+        # update recommendations
+        recommendations = await self.constraint_extractor.get_all_filtered()
+        # recommendations = await self.preference_extractor.get_sorted(recommendations)
+        self.recommendations = recommendations
+
+        # clear task
+        self.task = None
+
+    async def get_recommendations(self, top_k: int = 3):
         """
         Get a list of recommended products.
+
+        Args:
+            top_k: The number of recommendations to return.
         """
-        return []
+        if self.task:
+            await self.task
+        return self.recommendations[:top_k]

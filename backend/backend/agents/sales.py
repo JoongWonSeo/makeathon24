@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 SALES_SYSTEM = """
-You are a car sales assistant.
+You are a Sales Manager Emily from Mercedes-Benz. I am a potential customer. Your goal is to lead me to my ideal EV based on factors like range, price, number of seats, and my use case. In the end you should give me the option to go for a test ride, give me an offer, etc.
+
+Keep your answers short. Maximum two sentences.
 """.strip()
 
 SALES_FIRST_MESSAGE = """
@@ -19,7 +21,7 @@ Hey there! I'm Emily. What's your name?
 """.strip()
 
 # SALES_MODEL = "gpt-4-turbo"
-SALES_MODEL = "echo"
+SALES_MODEL = "gpt-3.5-turbo"
 
 
 class SalesToolkit(Toolkit):
@@ -40,12 +42,16 @@ class SalesToolkit(Toolkit):
 
     @function_tool
     @fail_with_message(logger=logger.error)
-    async def get_car_recommendations(self):
+    async def get_car_recommendations(self, num: int = 3):
         """
         Get car recommendations automatically based on the user's expressed preferences and constraints so far in the conversation.
         The recommendations are directly displayed to the user, so you SHOULD NOT repeat them in the chat. Instead, you should ask the user about what they think of the recommendations.
+
+        Args:
+            num: The number of recommendations to return.
         """
-        self.showroom = await self.backstage.get_recommendations()
+        self.showroom = await self.backstage.get_recommendations(num)
+        logger.info(f"Got {len(self.showroom)} car recommendations: {self.showroom}")
         return self.showroom
 
     @function_tool
@@ -59,7 +65,7 @@ class SalesToolkit(Toolkit):
         # return await self.backstage.show_testdrive_booking()
 
 
-class SalesAssistant(SyncedChatGPT):
+class SalesAgent(SyncedChatGPT):
     def __init__(
         self,
         backstage: Backstage,
