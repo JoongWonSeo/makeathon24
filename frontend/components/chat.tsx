@@ -89,7 +89,7 @@ const toolRenderers = (tool_name: string, tool_call: any) => {
         open: false,
       };
     default:
-      return { title: tool_name, Renderer: DefaultTool, open: true };
+      return { title: tool_name, Renderer: DefaultTool, open: false };
   }
 };
 
