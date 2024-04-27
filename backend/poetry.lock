@@ -24,7 +24,7 @@ tiktoken = "^0.5.2"
 type = "git"
 url = "https://github.com/JoongWonSeo/agentools.git"
 reference = "HEAD"
-resolved_reference = "91484f64a690b784a3dff984aab39e6f497f7efc"
+resolved_reference = "96a6632bc5908f21a19dc5ef3a31ac6a118f3c00"
 
 [[package]]
 name = "annotated-types"
