@@ -4,6 +4,10 @@ interface ShowroomProps {
   showroom: any;
 }
 
+function numberWithCommas(x: number) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 const Showroom = ({ showroom }: ShowroomProps) => {
   //   const carList: any[] = [1, 2, 3, 4, 5, 6, 6, 3, 3, 3, 3, 3];
   // list of dicts with car details
@@ -87,7 +91,9 @@ const Showroom = ({ showroom }: ShowroomProps) => {
             <p className="font-light text-sm">
               {car.vehicle_type} • {car.num_seats} Seats • {car.powertrain_type}
             </p>
-            <p className="font-bold text-sm mt-1">UVP ${car.price_in_usd}</p>
+            <p className="font-bold text-sm mt-1">
+              €{numberWithCommas(car.price_in_usd)}
+            </p>
             {/* <button className="bg-[#0078d6] text-white mt-4 p-2 w-full">
               I like this
             </button> */}

@@ -66,6 +66,7 @@ export default function Home() {
       rightSidebar={
         <div className="h-full bg-[#FDFDFD]">
           <Chat
+            showroom={showroom}
             history={
               messages.partial
                 ? [...messages.history, messages.partial]
