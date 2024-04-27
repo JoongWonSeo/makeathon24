@@ -103,7 +103,7 @@ const Sidebar = ({
   return (
     <div className={`flex flex-col min-h-0 h-full ${className || ""}`}>
       <div className="w-full h-full flex flex-col overflow-auto">
-        <ScrollShadow>hello</ScrollShadow>
+        <ScrollShadow></ScrollShadow>
       </div>
 
       <Expander variant="light" defaultExpandedKeys={["1", "2"]}>

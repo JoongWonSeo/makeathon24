@@ -9,6 +9,7 @@ import {
   FaHeart,
   FaStop,
   FaPaperPlane,
+  FaPlus,
   FaUser,
 } from "react-icons/fa6";
 
@@ -271,57 +272,106 @@ const ChatInput = ({
     }
   };
 
+  const carList = [
+    {
+      model: "A-Class",
+      body_type: "Compact",
+      num_seats: 5,
+      powertrain: "ICE",
+      specs: {},
+      price: "€110,000",
+      image_link: [
+        "https://assets.oneweb.mercedes-benz.com/iris/iris.png?COSY-EU-100-1713d0VXqaWFqtyO67PobzIr3eWsrrCsdRRzwQZg9BZbMw3SGtGyWtsd2sDcUfp8fXGEuiRJ0l3IJOB2NMcbApRTyI5uGoxQC30SpkzNHTwm7j87mhKVis3%25vq4y9yLRgYFYaxPJWrH1yBRn8wYTyoiZB7lM4FAOrTg9LQ96PDacpSeWHnStsd8oxcUfiXyXGE45wJ0lg%25fOB2znobQOcxwRs%25M4FzKyTg9itk6PD4%25NSeWgyhtsdRHQcUfGU6XGE0aSJ0lBIVOB2AMnbAp5dXI5gZ8lXhRjwQZgV4Tu8uoQ3pE77V9hDNt3DkSW9wUwopoL24PvEa2zq7Dwc=&BKGND=9&IMGT=P27&POV=BE040%2CPZM&im=Trim&fuzz=0.5&width=670",
+      ],
+    },
+    {
+      model: "EQS",
+      body_type: "Limousine",
+      num_seats: 5,
+      powertrain: "EV",
+      price: "€130,000",
+      image_link: [
+        "https://assets.oneweb.mercedes-benz.com/iris/iris.png?COSY-EU-100-1713d0VXq0WFqtyO67PobzIr3eWsrrCsdRRzwQZgk4ZbMw3SGtGyWtsd2vtcUfp8cXGEuiRJ0l3IrOB2NzObApRAlI5ux4uQC31gFkzNwtnm7jZaShKV5SM%25vqCv%25yLRzAHYax75prH1KMrn8wvT2oiZUbXM4FG4fTg90v36PDBSbSeWAtRtsd5c%25cUfCykXGEzhEJ0lL6tOB2aS1bApHYXI5usouQC3UC1kzNG%25wm7j0yFhKVBbQ%25vqAIjyLR5YmYaxCrJrH1zgtn8w7XxoiZekXM4FsQkTSMrp32aJm7jG63hKVUXd%25vq7UTyLRKGXYaxvbErH1LbWn8wussoiZ45pM4FgCPTg9Pt26PDecmSevjzFoJpENtjUcKU6zWmtdDZGGlqJRfrdRcYxqN8NmDmA9KLBZ59U2GRNn=&BKGND=9&IMGT=P27&POV=BE040%2CPZM&im=Trim&fuzz=0.5&width=670",
+      ],
+    },
+    {
+      model: "GLB",
+      body_type: "SUV",
+      num_seats: 5,
+      powertrain: "ICE",
+      price: "€68,000",
+      image_link: [
+        "https://assets.oneweb.mercedes-benz.com/iris/iris.png?COSY-EU-100-1713d0VXqNEFqtyO67PobzIr3eWsrrCsdRRzwQZYZ4ZbMw3SGtlaWtsd2HVcUfpO6XGEubXJ0l3otOB2NMEbApjtwI5ux5xQC31SrkzNBTwm7jA7mhKV5Yh%25vqCJjyLRz3yYaxPXWrH1eJtn8ws8noiZUidM4FGR1Tg906O6PDBSsSeWAhutsd6vDcUfSO6XGEvajJ0lL4qOB2aScbApHtxI5u8ruQC3UM3kzNG%25wm7j0cmhKVBbh%25vqAIlyLR5YXYaxC4WrH1zgun8w7XxoiZx6YM4F1mlTg9Ukm6tTnuNpHOhKVU9QC6VgDkzIqgWm7s08dhK%25hqf%25vycDEyLYXrlYarJv2rHn30pn8o9ZuoiMvl3Mk5bHlqGeAN56zQH4b4FNgiaSSszq7Pfg7jdKzAyAFiFX8QmcaJ86US7AE=&BKGND=9&IMGT=P27&POV=BE040%2CPZM&im=Trim&fuzz=0.5&width=670",
+      ],
+    },
+  ];
+
   return (
-    <div
-      className={`flex flex-row items-center justify-center border py-4 bg-white focus:outline-none resize-none shadow-lg backdrop-blur overflow-y-visible ${className}`}
-    >
-      <Textarea
-        value={inputValue}
-        onValueChange={setInputValue}
-        onKeyDown={(event) => {
-          if (enterToSend && event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-            handleSendMessage();
-          }
-        }}
-        classNames={{
-          inputWrapper:
-            "bg-transparent shadow-none focus:shadow-none focus:bg-transparent",
-          input: "text-black",
-        }}
-        className="ml-5"
-        style={{ fontSize: "1rem" }}
-        placeholder="Type your message..."
-        minRows={1}
-        maxRows={15}
-        onHeightChange={setTextBoxHeight}
-      />
-      <button
-        // isIconOnly
-        onClick={isGenerating ? onCancel : handleSendMessage}
-        color={isGenerating ? "danger" : "primary"}
-        className="m-2 px-0 py-0 "
-        style={{ height: textBoxHeight + 10 }}
+    <div>
+      {carList.map((car) => (
+        <div
+          className="bg-white w-full border-1 p-[0.8rem] flex items-center "
+          onClick={() => {}}
+        >
+          <FaPlus className="text-[#0078d6] text-sm"></FaPlus>
+          <p className="ml-4 text-[#0078d6] select-none text-sm cursor-pointer">
+            I like the {car.model} ({car.body_type} • {car.num_seats} •{" "}
+            {car.powertrain})
+          </p>
+        </div>
+      ))}
+
+      <div
+        className={`flex flex-row items-center justify-center border py-4 bg-white focus:outline-none resize-none shadow-lg backdrop-blur overflow-y-visible ${className}`}
       >
-        {isGenerating ? (
-          <FaStop className="text-2xl" />
-        ) : (
-          <svg
-            width="2em"
-            height="1.5em"
-            viewBox="0 0 24 24"
-            fill="none"
-            color="gray"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M5.264 2C2.878 2 1.496 4.703 2.893 6.637L6.766 12l-3.873 5.363C1.496 19.297 2.878 22 5.263 22c.651 0 1.291-.163 1.862-.475l13.44-7.33c1.737-.948 1.737-3.442 0-4.39l-13.44-7.33A3.887 3.887 0 0 0 5.264 2Zm-.75 3.466A.925.925 0 0 1 5.264 4c.315 0 .626.08.903.23L18.578 11H8.511L4.514 5.466ZM8.511 13l-3.997 5.534A.925.925 0 0 0 5.264 20c.315 0 .626-.08.903-.23L18.578 13H8.511Z"
-              fill="currentColor"
-            ></path>
-          </svg>
-        )}
-      </button>
+        <Textarea
+          value={inputValue}
+          onValueChange={setInputValue}
+          onKeyDown={(event) => {
+            if (enterToSend && event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              handleSendMessage();
+            }
+          }}
+          classNames={{
+            inputWrapper:
+              "bg-transparent shadow-none focus:shadow-none focus:bg-transparent",
+            input: "text-black",
+          }}
+          className="ml-5"
+          style={{ fontSize: "1rem" }}
+          placeholder="Type your message..."
+          minRows={1}
+          maxRows={15}
+          onHeightChange={setTextBoxHeight}
+        />
+        <button
+          // isIconOnly
+          onClick={isGenerating ? onCancel : handleSendMessage}
+          color={isGenerating ? "danger" : "primary"}
+          className="m-2 px-0 py-0 "
+          style={{ height: textBoxHeight + 10 }}
+        >
+          {isGenerating ? (
+            <FaStop className="text-2xl" />
+          ) : (
+            <svg
+              width="2em"
+              height="1.5em"
+              viewBox="0 0 24 24"
+              fill="none"
+              color="gray"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M5.264 2C2.878 2 1.496 4.703 2.893 6.637L6.766 12l-3.873 5.363C1.496 19.297 2.878 22 5.263 22c.651 0 1.291-.163 1.862-.475l13.44-7.33c1.737-.948 1.737-3.442 0-4.39l-13.44-7.33A3.887 3.887 0 0 0 5.264 2Zm-.75 3.466A.925.925 0 0 1 5.264 4c.315 0 .626.08.903.23L18.578 11H8.511L4.514 5.466ZM8.511 13l-3.997 5.534A.925.925 0 0 0 5.264 20c.315 0 .626-.08.903-.23L18.578 13H8.511Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   );
 };
