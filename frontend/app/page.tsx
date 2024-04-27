@@ -36,6 +36,12 @@ export default function Home() {
   // assistant state
   const messages = useSynced<Messages>("MESSAGES", initialMessages);
 
+  // showroom state
+  const showroom = useSynced("SHOWROOM", {
+    showing: [] as object[],
+    isTestdriveBooking: false,
+  });
+
   // auto connect on mount
   useEffect(() => {
     if (session) session.onConnectionChange = setIsConnected;
@@ -96,7 +102,7 @@ You can ask me anything about the cars, and I will provide you with the informat
                     <p className="text-xs ">
                       Made with{" "}
                       <FaHeart className="inline-block align-text-bottom" /> by
-                      Team A(sian)Intelligence
+                      Team A(sian)I
                     </p>
                   </CardFooter>
                 </Card>
@@ -110,7 +116,7 @@ You can ask me anything about the cars, and I will provide you with the informat
       }
     >
       {/* main editor view */}
-      <Showroom></Showroom>
+      <Showroom showroom={showroom} />
     </SidebarLayout>
   );
 }

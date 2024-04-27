@@ -28,7 +28,7 @@ class SalesToolkit(Toolkit):
     @sync_only(
         "SHOWROOM",
         # === attributes to sync ===
-        showroom=...,
+        showing=...,
         is_testdrive_booking=...,
         # === sync settings ===
         _toCamelCase=True,
@@ -37,7 +37,7 @@ class SalesToolkit(Toolkit):
         super().__init__()
 
         self.backstage = backstage
-        self.showroom = []  # list of currently showing car recommendations
+        self.showing = []  # list of currently showing car recommendations
         self.is_testdrive_booking = False
 
     @function_tool
@@ -50,9 +50,12 @@ class SalesToolkit(Toolkit):
         Args:
             num: The number of recommendations to return.
         """
-        self.showroom = await self.backstage.get_recommendations(num)
-        logger.info(f"Got {len(self.showroom)} car recommendations: {self.showroom}")
-        return self.showroom
+        self.showing = [
+            r.model_dump() for r in await self.backstage.get_recommendations(num)
+        ]
+        logger.info(f"Got {len(self.showing)} car recommendations: {self.showing}")
+        await self.sync()
+        return self.showing
 
     @function_tool
     @fail_with_message(logger=logger.error)
@@ -61,6 +64,7 @@ class SalesToolkit(Toolkit):
         Show the user a calendar for booking a test drive.
         """
         self.is_testdrive_booking = True
+        await self.sync()
         return "success, user is currently choosing a date and time for the test drive."
         # return await self.backstage.show_testdrive_booking()
 
