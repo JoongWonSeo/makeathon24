@@ -311,7 +311,10 @@ const ChatInput = ({
       {carList.map((car) => (
         <div
           className="bg-white w-full border-1 p-[0.8rem] flex items-center "
-          onClick={() => {}}
+          onClick={() => {
+            const textToSend = `I like the ${car.model} (${car.body_type} • ${car.num_seats} •${car.powertrain})`;
+            onSend(textToSend);
+          }}
         >
           <FaPlus className="text-[#0078d6] text-sm"></FaPlus>
           <p className="ml-4 text-[#0078d6] select-none text-sm cursor-pointer">
