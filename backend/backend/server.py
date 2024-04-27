@@ -28,39 +28,41 @@ def hello():
 async def websocket_endpoint(ws: WebSocket):
     """
     Handle a new websocket connection by creating a new session or using an existing one.
-    We use the user_id as the session_id, so that each user can only have one session at a time.
+    We use the tab_id as the session_id, so that each user can only have multiple distinct tabs at a time.
     When a user creates multiple tabs (i.e. multiple WS connections), the new tab will overwrite the old one,
     and the old one will be disconnected.
     """
 
     # ========== Initialize the session ========== #
     await ws.accept()
-    user_id, session_id = await get_user_session(ws)
+    user_id, tab_id = await get_user_session(ws)
 
-    if not user_id or not session_id:
+    if not user_id or not tab_id:
         # frontend didn't properly provide a user_id or session_id
         return
 
-    if user_id not in sessions:
+    session_id = tab_id
+
+    if session_id not in sessions:
         # create a new session
-        session_logger = logging.getLogger(f"{__name__}.USER:{user_id}")
+        session_logger = logging.getLogger(f"{__name__}.SESSION:{session_id}")
         session = Session(logger=session_logger)
         session_context.set(session)
-        logger.info(f"New session: {user_id}")
+        logger.info(f"New session: {session_id}")
         try:
             await SessionState()
         except Exception as e:
             await session.disconnect(
                 message=f"Failed to initialize session: {e}", ws=ws
             )
-            sessions.pop(user_id, None)
+            sessions.pop(session_id, None)
             raise e
         # save new session
-        sessions[user_id] = session
+        sessions[session_id] = session
 
     else:
         # use existing session
-        session = sessions[user_id]
+        session = sessions[session_id]
         session_context.set(session)
 
     # ========== Handle the connection ========== #

@@ -1,7 +1,9 @@
 from asyncinit import asyncinit
 from ws_sync import session_context
 
-from .assistant.sales import SalesAssistant
+from .agents.sales import SalesAssistant
+from .agents.backstage.backstage import Backstage
+from .db.products import product_db
 
 
 @asyncinit
@@ -14,4 +16,9 @@ class SessionState:
     async def __init__(self):
         session_context.get().state = self  # attach to current session
 
-        self.assistant = SalesAssistant(model="gpt-4-turbo")
+        # initialize the product database
+        await product_db.check_exist_and_initialize()
+        # await customer_db.check_exist_and_initialize()
+
+        self.backstage = Backstage(product_db=product_db)
+        self.assistant = SalesAssistant(backstage=self.backstage)
