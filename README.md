@@ -1,10 +1,11 @@
-# uc-copilot
+# Assistant
 
 Please look at the individual backend/ and frontend/ READMEs for individual instructions.
 
 ## Setup
 
 1. First, build the frontend to generate the static files of the web app:
+
 ```bash
 cd frontend
 npm install
