@@ -17,7 +17,32 @@ Powertrain = OriginalStrEnum(
 
 VehicleType = OriginalStrEnum(
     "VehicleType",
-    ["Car", "Truck", "SUV", "Van"],
+    [
+        "Car Van",
+        "Cargo Van",
+        "Chassis Cab",
+        "Combi",
+        "Commercial Wagon",
+        "Convertible",
+        "Coupe",
+        "Cutaway",
+        "Hatchback",
+        "Micro Car",
+        "Mini MPV",
+        "Minivan",
+        "Passenger Van",
+        "Pickup",
+        "SUV",
+        "Sedan",
+        "Targa",
+        "Van",
+        "Wagon"
+    ],
+)
+
+Color = OriginalStrEnum(
+    "Color",
+    ['Black', 'Gray', 'Silver', 'White', 'Blue', 'Green', 'Red', 'Brown', 'Beige', 'Gold'],
 )
 
 
@@ -40,7 +65,7 @@ class Product(EmbeddableData):
     num_seats: int  # build.std_seating
     color: str  # base_ext_color
     # customization_options: list[str]
-    specs: dict[str, str]  # build
+    specs: dict  # build
 
     # ========= "Soft" data ========= #
     # resale_value: float  # 0-1, high resale value is 1
