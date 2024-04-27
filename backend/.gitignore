@@ -1,0 +1,14 @@
+# storage files
+storage/
+
+# environment files
+.env
+
+# python files
+__pycache__/
+
+# Prototyping
+sandbox.ipynb
+
+# MacOS
+.DS_Store

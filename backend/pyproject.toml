@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = [
+    "Joong-Won Seo <j.seo@appliedai.de>",
+    "Ferdy <f.hadiwijaya@appliedai.de>",
+]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "~3.11"
+fastapi = "^0.110.2"
+uvicorn = { extras = ["standard"], version = "^0.24.0.post1" }
+nbformat = "^5.9.2"
+nbclient = "^0.9.0"
+jsbeautifier = "^1.14.11"
+jsonpatch = "^1.33"
+python-dotenv = "^1.0.0"
+agentools = {git = "https://github.com/JoongWonSeo/agentools.git"}
+ws-sync = { git = "https://github.com/JoongWonSeo/ws-sync.git" }
+qdrant-client = "^1.7.3"
+asyncinit = { git = "https://github.com/JoongWonSeo/pyasyncinit.git" }
+unstructured = "0.12.6"
+w3lib = "^2.1.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.28.0"
+
+
+[tool.poetry.scripts]
+backend = "backend.server:start"
+backend-dev = "backend.server:dev"
+expose = "backend.server:expose"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
