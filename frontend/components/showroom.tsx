@@ -166,7 +166,7 @@ const Showroom = ({ showroom }: ShowroomProps) => {
                 className={`bg-white rounded-md shadow-[0_0px_2px_0.5px_rgba(0,0,0,0.32)] w-72 p-10 transition-transform duration-500 hover:cursor-pointer`} //hover:shadow-[0_2px_15px_1px_rgba(0,0,0,0.24)]
               >
                 <p className="font-bold text-sm mt-1 italic -mt-3 mb-4">
-                  "{car.reason}"
+                  &quot;{car.reason}&quot;
                 </p>
 
                 <img
