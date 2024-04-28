@@ -64,7 +64,7 @@ class Product(EmbeddableData):
 
     # ========= Vehicle Info ========= #
     name: str  # heading
-    # description: str
+    description: str
     vehicle_type: VehicleType  # build.body_type
     release_year: int  # build.year
     price_in_usd: float  # price

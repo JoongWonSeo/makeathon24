@@ -163,7 +163,7 @@ const Showroom = ({ showroom }: ShowroomProps) => {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 // className={`flex flex-row bg-default-50 rounded-2xl focus:ring-4 ring-primary/100 w-96 justify-center`}
-                className={`bg-white rounded-md shadow-[0_0px_2px_0.5px_rgba(0,0,0,0.32)] w-72 h-[550px] p-10 transition-transform duration-500 hover:cursor-pointer`} //hover:shadow-[0_2px_15px_1px_rgba(0,0,0,0.24)]
+                className={`bg-white rounded-md shadow-[0_0px_2px_0.5px_rgba(0,0,0,0.32)] w-72 p-10 transition-transform duration-500 hover:cursor-pointer`} //hover:shadow-[0_2px_15px_1px_rgba(0,0,0,0.24)]
               >
                 <img
                   className="transition-transform duration-300 hover:scale-110 h-24 m-auto"
@@ -178,6 +178,17 @@ const Showroom = ({ showroom }: ShowroomProps) => {
                 <p className="font-bold text-sm mt-1">
                   €{numberWithCommas(car.price_in_usd)}
                 </p>
+                <p className="font-bold text-sm mt-1 italic">"{car.reason}"</p>
+
+                {
+                  //car.specs is an object with key value pairs
+                  Object.keys(car.specs).map((key: string, i: number) => (
+                    <p key={i} className="font-light text-sm">
+                      {key}: {car.specs[key]}
+                    </p>
+                  ))
+                }
+
                 {/* <button className="bg-[#0078d6] text-white mt-4 p-2 w-full">
               I like this
             </button> */}

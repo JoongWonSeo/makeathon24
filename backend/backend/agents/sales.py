@@ -57,7 +57,8 @@ class SalesToolkit(Toolkit):
         """
         # TODO also show reason
         self.showing = [
-            r["car"].model_dump() for r in await self.backstage.get_recommendations(num)
+            {"reason": r["reason"], **(r["car"].model_dump())}
+            for r in await self.backstage.get_recommendations(num)
         ]
         logger.info(f"Got {len(self.showing)} car recommendations")
         await self.sync()
