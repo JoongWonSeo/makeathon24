@@ -45,10 +45,13 @@ class Backstage:
         Update the recommendations based on the given dialog.
         """
         try:
-            # TODO: parallelize
-            await self.filter_extractor.extract_filters(dialog)
-            await self.recommender.update_preferences(dialog)
+            filter_task = self.filter_extractor.extract_filters(dialog)
+            preference_task = self.recommender.update_preferences(dialog)
 
+            # wait for both tasks to finish
+            await filter_task
+            await preference_task
+            
             # update recommendations
             recommendations = await self.filter_extractor.get_all_filtered()
             recommendations = await self.recommender.get_recommendation(products=recommendations)
