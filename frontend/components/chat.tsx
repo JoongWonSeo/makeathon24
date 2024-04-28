@@ -1,5 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo, Fragment } from "react";
 import { produce } from "immer";
+import { ElevenLabsClient, play } from "elevenlabs";
+// const elevenlabs = new ElevenLabsClient({
+//   apiKey: "YOUR_API_KEY" // Defaults to process.env.ELEVENLABS_API_KEY
+// })
 
 import { js_beautify } from "js-beautify";
 import {
@@ -268,6 +272,7 @@ const ChatInput = ({
   const [textBoxHeight, setTextBoxHeight] = useState(0);
 
   const handleSendMessage = () => {
+    //elevenlabs
     if (inputValue.trim() !== "" && !isGenerating) {
       onSend(inputValue);
       setInputValue("");

@@ -120,14 +120,10 @@ const Showroom = ({ showroom }: ShowroomProps) => {
   const carList = showroom.showing;
   console.log(carList);
 
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function openModal() {
-    setModalIsOpen(true);
-  }
+  const modalIsOpen = showroom.isTestdriveBooking;
 
   function closeModal() {
-    setModalIsOpen(false);
+    showroom.sendAction({ type: "END_CHAT" });
   }
 
   return (
