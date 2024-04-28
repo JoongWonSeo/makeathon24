@@ -3,6 +3,7 @@ import logging
 from agentools.retrieval.db import EmbeddableDataCollection
 
 from .filter_extractor import FilterExtractor
+from .recommender import Recommender
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class Backstage:
 
         # agents
         self.filter_extractor = FilterExtractor(product_db=product_db)
-        # self.preference_extractor = PreferenceExtractor(product_db=product_db)
+        self.recommender = Recommender()
 
         # state
         self.recommendations = []
@@ -37,6 +38,7 @@ class Backstage:
         logger.info(f"Appending dialog:\n{dialog}")
 
         self.task = asyncio.create_task(self.update_recommendations(dialog))
+        
 
     async def update_recommendations(self, dialog):
         """
@@ -45,7 +47,7 @@ class Backstage:
         try:
             # TODO: parallelize
             await self.filter_extractor.extract_filters(dialog)
-            # await self.preference_extractor.extract_preferences(dialog)
+            await self.recommender.extract_preferences(dialog)
 
             # update recommendations
             recommendations = await self.filter_extractor.get_all_filtered()
