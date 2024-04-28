@@ -48,11 +48,19 @@ class Backstage:
             preference_task = self.recommender.update_preferences(dialog)
 
             # wait for both tasks to finish
-            await filter_task
-            await preference_task
+            try:
+                await filter_task
+            except Exception as e:
+                logger.error(f"Error extracting filters: {repr(e)}", exc_info=True)
+
+            try:
+                await preference_task
+            except Exception as e:
+                logger.error(f"Error extracting preferences: {repr(e)}", exc_info=True)
 
             # update recommendations
             filtered = await self.filter_extractor.get_all_filtered()
+            logger.info(f"#filtered: {len(filtered)}")
             recommendations = await self.recommender.get_recommendation(
                 products=filtered
             )

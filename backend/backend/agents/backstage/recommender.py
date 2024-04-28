@@ -1,9 +1,12 @@
 import json
+import logging
 
 from agentools import ChatGPT, SimpleHistory, msg
 from backend.db.products import Product
 
-EXTRACTOR_SYSTEM = """
+logger = logging.getLogger(__name__)
+
+PREFERENCE_SYSTEM = """
 The Customer wants to buy a car. The Customer talks with a dealer to find the car that fits his needs. The Customer gives out information about the car he wants and about himself. 
 
 You are a third party that listens to the conversation. You have a conversation history between the Customer and the dealer. Your task is to extract the Customer's preferences from the conversation.
@@ -18,17 +21,20 @@ Gather what you know about the Customer and build up your guess based on the pre
 
 
 RECOMMENDER_SYSTEM = """
-A customer wants to buy a car. Return at most three cars from the given list of cars that best match the customer's preferences. You MUST stick to the given list. Recommend electric cars first, then hybrid cars, and then gasoline cars. If there are multiple cars of the same type, recommend the one with the lowest price first.
-
-If you can't find any that match the customer's preferences, return the empty object {{}}. Otherwise, answer in the following json format:
-{{"cars_best_first": [{{"id": 123, "reason": "the reason why this car is best, in 1 short sentence"}}, {{"id": 456, "reason": "the reason why this car is second best, in 1 short sentence"}}, ...]}}
+A customer wants to buy a car. You MUST ALWAYS return three cars from the given list of cars that best match the customer's preferences. You MUST stick to the given list. Recommend electric cars first, then hybrid cars, and then gasoline cars. If there are multiple cars of the same type, recommend the one with the lowest price first.
+If the user has no preference and is open to recommendations, recommend a car that is well-known and has good value.
+Answer in the following json format:
+{{"car_recommendations": [{{"id": 123, "reason": "the reason why this car is best, in 1 short sentence"}}, ...]}}
 
 CUSTOMER PREFERENCES:
 {preference}
 """.strip()
 
-PREFERENCE_MODEL = "mock"
-RECOMMENDER_MODEL = "mock"
+# PREFERENCE_MODEL = "llama3-8b-8192"
+# RECOMMENDER_MODEL = "llama3-8b-8192"
+
+PREFERENCE_MODEL = "gpt-4-turbo"
+RECOMMENDER_MODEL = "gpt-4-turbo"
 
 
 class RecommenderHistory(SimpleHistory):
@@ -52,11 +58,11 @@ class RecommenderHistory(SimpleHistory):
 
 class Recommender:
     def __init__(self, user_data=None):
-        # Extractor
+        # Preference extractor
         messages = SimpleHistory.system(
-            EXTRACTOR_SYSTEM.format(user_data=user_data or "None")
+            PREFERENCE_SYSTEM.format(user_data=user_data or "None")
         )
-        self.extractor = ChatGPT(messages=messages, model=PREFERENCE_MODEL)
+        self.preference = ChatGPT(messages=messages, model=PREFERENCE_MODEL)
 
         # Recommender
         self.recommender_history = RecommenderHistory(RECOMMENDER_SYSTEM)
@@ -65,9 +71,11 @@ class Recommender:
         )
 
     async def update_preferences(self, dialog):
-        extracted = await self.extractor(dialog)
-        self.recommender_history.preference = extracted
-        return extracted
+        preference = await self.preference(dialog)
+        self.recommender_history.preference = preference
+
+        logger.info(f"Extracted preference: {preference}")
+        return preference
 
     async def get_recommendation(self, products: list[Product]) -> list[dict]:
         products = products[:20]
@@ -86,9 +94,18 @@ class Recommender:
             f"LIST OF CARS: {json.dumps(car_list)}",
             response_format={"type": "json_object"},
         )
+
+        # logger.info(f"TEST: {recommendation}")
+
         recommendation = json.loads(recommendation)
-        recommendation = recommendation.get("cars_best_first")
-        if not recommendation:
+
+        # logger.info(f"TEST: {recommendation}")
+
+        recommendation = recommendation.get("car_recommendations")
+        if recommendation is None:
+            logger.warn(
+                f"ERROR: No Recommendation because of bad recommendation return"
+            )
             return []
 
         # Return the recommendation
@@ -96,5 +113,7 @@ class Recommender:
         for r in recommendation:
             car = products[int(r["id"])]
             result.append({"reason": r["reason"], "car": car})
+
+        logger.info(f"Recommended: {result}")
 
         return result
