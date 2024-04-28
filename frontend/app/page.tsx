@@ -130,15 +130,15 @@ export default function Home() {
                   <CardHeader className="justify-center">
                     <ChatAvatar className="mr-3 scale-125" role="assistant" />
                     <h1 className="text-xl text-primary-foreground font-bold">
-                      Welcome!
+                      Welcome to Mercedes-Benz!
                     </h1>
                   </CardHeader>
                   <CardBody>
                     <MD className="leading-5">
                       {`
-I am your personal AI agent. I am happy to tell you about the latest Mercedes-Benz cars. 
+Merry can help you find the perfect car for you. She has access to all Mercedes-Benz models and will find personalized recommendations.
 
-You can ask me anything about the cars, and I will provide you with the information you need.
+Make yourself at home and have a little chat!
                       `}
                     </MD>
                   </CardBody>
@@ -146,7 +146,7 @@ You can ask me anything about the cars, and I will provide you with the informat
                     <p className="text-xs ">
                       Made with{" "}
                       <FaHeart className="inline-block align-text-bottom" /> by
-                      Team A(sian)I
+                      J, F, V and L
                     </p>
                   </CardFooter>
                 </Card>

@@ -115,7 +115,7 @@ const Sidebar = ({
         </ScrollShadow>
       </div>
 
-      <Expander variant="light" defaultExpandedKeys={["1", "2"]}>
+      <Expander variant="light" defaultExpandedKeys={[]}>
         <ExpanderItem title="Model Options" key="1">
           <SingleSelect
             label="model"
