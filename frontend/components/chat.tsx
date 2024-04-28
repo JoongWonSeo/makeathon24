@@ -152,16 +152,24 @@ const toolRenderers = (tool_name: string, tool_call: any) => {
     args = JSON.parse(tool_call.function.arguments);
   } catch (e) {}
   switch (tool_name) {
-    case "search_cars":
+    case "get_car_recommendations":
       //call API to get car details
       //update carList in showroom.tsx
 
       return {
-        title: "Search Cars",
+        title: "Finding Cars",
         subtitle: args?.title,
         Renderer: DefaultTool,
         open: false,
       };
+
+    case "show_testdrive_booking":
+      return {
+        title: "Book Test Drive",
+        Renderer: DefaultTool,
+        open: false,
+      };
+
     default:
       return { title: tool_name, Renderer: DefaultTool, open: false };
   }

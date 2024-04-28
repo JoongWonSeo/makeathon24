@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from agentools.retrieval.db import EmbeddableDataCollection
+from ws_sync import sync_only
 
 from ...db.users import UserData
 from .filter_extractor import FilterExtractor
@@ -19,16 +20,21 @@ class Backstage:
     A group of agents that work together to select the best recommendations for the user.
     """
 
+    @sync_only("BACKSTAGE", filters=..., preferences=...)
     def __init__(self, product_db: EmbeddableDataCollection, user_data: UserData):
         self.product_db = product_db
 
         # agents
-        self.filter_extractor = FilterExtractor(product_db=product_db)
-        self.recommender = Recommender(user_data=user_data)
+        self.filter_extractor = FilterExtractor(product_db=product_db, backstage=self)
+        self.recommender = Recommender(user_data=user_data, backstage=self)
 
         # state
         self.recommendations = []  # [{"reason":, "car": Product}]
         self.task = None
+
+        # debug state
+        self.filters = ""
+        self.preferences = ""
 
     def append_dialog(self, dealer: str, customer: str):
         """

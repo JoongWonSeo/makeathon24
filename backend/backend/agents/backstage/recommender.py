@@ -60,7 +60,7 @@ class RecommenderHistory(SimpleHistory):
 
 
 class Recommender:
-    def __init__(self, user_data=None):
+    def __init__(self, user_data=None, backstage=None):
         # Preference extractor
         messages = SimpleHistory.system(
             PREFERENCE_SYSTEM.format(user_data=user_data or "None")
@@ -73,11 +73,16 @@ class Recommender:
             messages=self.recommender_history, model=RECOMMENDER_MODEL
         )
 
+        self.backstage = backstage
+
     async def update_preferences(self, dialog):
         preference = await self.preference(dialog)
         self.recommender_history.preference = preference
 
         logger.info(f"Extracted preference: {preference}")
+        if self.backstage:
+            self.backstage.preferences = preference
+            await self.backstage.sync()
         return preference
 
     async def get_recommendation(self, products: list[Product]) -> list[dict]:

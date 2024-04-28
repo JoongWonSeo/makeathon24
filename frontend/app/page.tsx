@@ -78,6 +78,12 @@ export default function Home() {
     isTestdriveBooking: false,
   });
 
+  //backstage state
+  const backstage = useSynced("BACKSTAGE", {
+    filters: "",
+    preferences: "",
+  });
+
   // auto connect on mount
   useEffect(() => {
     if (session) session.onConnectionChange = setIsConnected;
@@ -90,6 +96,7 @@ export default function Home() {
           <Sidebar
             gpt={gpt}
             messages={messages}
+            backstage={backstage}
             showSystem={showSystem}
             setShowSystem={setShowSystem}
           />

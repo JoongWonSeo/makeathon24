@@ -165,6 +165,10 @@ const Showroom = ({ showroom }: ShowroomProps) => {
                 // className={`flex flex-row bg-default-50 rounded-2xl focus:ring-4 ring-primary/100 w-96 justify-center`}
                 className={`bg-white rounded-md shadow-[0_0px_2px_0.5px_rgba(0,0,0,0.32)] w-72 p-10 transition-transform duration-500 hover:cursor-pointer`} //hover:shadow-[0_2px_15px_1px_rgba(0,0,0,0.24)]
               >
+                <p className="font-bold text-sm mt-1 italic -mt-3 mb-4">
+                  "{car.reason}"
+                </p>
+
                 <img
                   className="transition-transform duration-300 hover:scale-110 h-24 m-auto"
                   src={car.image_url[0]}
@@ -178,7 +182,6 @@ const Showroom = ({ showroom }: ShowroomProps) => {
                 <p className="font-bold text-sm mt-1">
                   €{numberWithCommas(car.price_in_usd)}
                 </p>
-                <p className="font-bold text-sm mt-1 italic">"{car.reason}"</p>
 
                 {
                   //car.specs is an object with key value pairs

@@ -39,11 +39,13 @@ MODEL = "gpt-4-turbo"
 
 
 class FilterExtractor(ChatGPT):
-    def __init__(self, product_db: EmbeddableDataCollection):
+    def __init__(self, product_db: EmbeddableDataCollection, backstage=None):
         super().__init__(messages=SimpleHistory.system(SYSTEM), model=MODEL)
 
         self.product_db = product_db
         self.filters = {"must": []}  # combined filters, joined by AND
+
+        self.backstage = backstage
 
     async def extract_filters(self, dialog, max_retries=3):
         FILTER_KEYS = [
@@ -109,9 +111,14 @@ class FilterExtractor(ChatGPT):
 
     async def get_all_filtered(self):
         """Convert a list of json-like filter objects into a single filter object and return all products that match the filter."""
-        logger.info(
-            f"All filters so far: {self.filters}\n{prettier_filter(self.filters)}"
-        )
+        try:
+            pretty = prettier_filter(self.filters)
+            logger.info(f"All filters so far: {self.filters}\n{pretty}")
+            if self.backstage:
+                self.backstage.filters = pretty
+                await self.backstage.sync()
+        except Exception:
+            pass
 
         # convert to Filter object for compatibility with the database
         combined_filter = TypeAdapter(Filter).validate_python(self.filters)

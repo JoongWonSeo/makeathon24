@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import fileDownload from "js-file-download";
 import { useState } from "react";
 import { Tooltip } from "../base/tooltip";
+import { MD } from "../base/md";
 
 interface SaveChatProps {
   messages: any;
@@ -88,6 +89,7 @@ const LoadChat = ({ messages }: LoadChatProps) => {
 interface SidebarProps {
   gpt: any;
   messages: any;
+  backstage: any;
   showSystem: boolean;
   setShowSystem: (show: boolean) => void;
   className?: string;
@@ -96,6 +98,7 @@ interface SidebarProps {
 const Sidebar = ({
   gpt,
   messages,
+  backstage,
   showSystem,
   setShowSystem,
   className,
@@ -103,7 +106,12 @@ const Sidebar = ({
   return (
     <div className={`flex flex-col min-h-0 h-full ${className || ""}`}>
       <div className="w-full h-full flex flex-col overflow-auto">
-        <ScrollShadow></ScrollShadow>
+        <ScrollShadow className="m-3">
+          <p className="font-bold text-sm">Filters:</p>
+          {backstage.filters}
+          <p className="font-bold text-sm mt-3">User Preferences:</p>
+          {backstage.preferences}
+        </ScrollShadow>
       </div>
 
       <Expander variant="light" defaultExpandedKeys={["1", "2"]}>
