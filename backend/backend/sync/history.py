@@ -28,7 +28,8 @@ class SyncedMessageHistory(MessageHistory):
         # called by the assistant
         message = self.ensure_dict(message)
         self._history.append(message)
-        await self.sync.send_action({"type": "SPEAK_MESSAGE", "text": message["content"]})
+        if message.get("role") == "assistant":
+            await self.sync.send_action({"type": "SPEAK_MESSAGE", "text": message["content"]})
         await self.sync()
 
     @remote_action("RESET_CHAT")

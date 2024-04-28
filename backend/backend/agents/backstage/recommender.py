@@ -27,8 +27,8 @@ CUSTOMER PREFERENCES:
 {preference}
 """.strip()
 
-PREFERENCE_MODEL = "gpt-4-turbo"
-RECOMMENDER_MODEL = "gpt-4-turbo"
+PREFERENCE_MODEL = "mock"
+RECOMMENDER_MODEL = "mock"
 
 
 class RecommenderHistory(SimpleHistory):

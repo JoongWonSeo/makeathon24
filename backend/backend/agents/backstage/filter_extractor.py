@@ -35,7 +35,7 @@ Every time you respond with a new filter, it will be added to the collection of 
 When you respond with a new filter for a key that was already filtered, the new filter will replace the old filter for that key, which lets you refine the filter over time. Finally, in order to remove a filter for a key, such that the key is no longer constrained, you must set its match to null like: {{"key": "num_seats", "match": null]}}!
 """.strip()
 
-MODEL = "gpt-4-turbo"
+MODEL = "mock"
 
 
 class FilterExtractor(ChatGPT):
