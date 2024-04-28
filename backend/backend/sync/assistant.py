@@ -71,12 +71,12 @@ class SyncedChatGPT(ChatGPT):
         return GLOBAL_RECORDINGS.current_recorder is not None
 
     @remote_task("PROMPT")
-    async def prompt(self, prompt: str, **openai_kwargs):
+    async def prompt(self, prompt: str, stream: bool = True, **openai_kwargs):
         async for event in self.response_events(
             prompt,
             model=self.default_model,
             temperature=self.temperature,
-            stream=True,
+            stream=stream,
             **openai_kwargs,
         ):
             match event:

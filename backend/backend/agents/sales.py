@@ -107,4 +107,4 @@ class SalesAgent(SyncedChatGPT):
             dealer=self.messages.history[-1]["content"], customer=prompt
         )
 
-        await super().prompt(prompt)
+        await super().prompt(prompt, stream=False)
