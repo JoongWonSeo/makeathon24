@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo, Fragment } from "react";
 import { produce } from "immer";
-import { ElevenLabsClient, play } from "elevenlabs";
-
-// const elevenlabs = new ElevenLabsClient({
-//   apiKey: process.env.ELEVENLABS_API_KEY, // Defaults to process.env.ELEVENLABS_API_KEY
-// });
+import AudioStream from "./AudioStream";
+import axios from "axios";
 
 import { js_beautify } from "js-beautify";
 import {
@@ -40,6 +37,42 @@ import {
   usePresence,
   useTransform,
 } from "framer-motion";
+
+// TTS with ElevenLabs API
+export const startStreaming = async (text: String) => {
+  const baseUrl = "https://api.elevenlabs.io/v1/text-to-speech";
+  const headers = {
+    "Content-Type": "application/json",
+    "xi-api-key": "0ac8aee2f15400832895595dcb4a0c43",
+  };
+
+  const requestBody = {
+    text,
+    voice_settings: {
+      stability: 0.3,
+      similarity_boost: 0.8,
+    },
+  };
+
+  try {
+    const response = await axios.post(
+      `${baseUrl}/yrhDMxfTsTKsOoYkJmpR`,
+      requestBody,
+      {
+        headers,
+        responseType: "blob",
+      }
+    );
+
+    if (response.status === 200) {
+      const audio = new Audio(URL.createObjectURL(response.data));
+      audio.play();
+    } else {
+    }
+  } catch (error) {
+  } finally {
+  }
+};
 
 // define messages state object and its reducer
 type Message = {
@@ -273,7 +306,6 @@ const ChatInput = ({
   const [textBoxHeight, setTextBoxHeight] = useState(0);
 
   const handleSendMessage = () => {
-    //elevenlabs
     if (inputValue.trim() !== "" && !isGenerating) {
       onSend(inputValue);
       setInputValue("");
@@ -435,6 +467,17 @@ const Chat = ({
 
   // scroll to bottom when new messages are added
   useEffect(() => scrollToBottom(), [history]);
+
+  // useEffect(() => {
+  //   //if last in history is from the assistant, start streaming
+  //   const lastMessage = history[history.length - 1];
+  //   if (lastMessage.role === "assistant") {
+  //     const text = lastMessage.content;
+  //     if (text) {
+  //       startStreaming(text);
+  //     }
+  //   }
+  // });
 
   // scroll to bottom when window is resized
   useEffect(() => {

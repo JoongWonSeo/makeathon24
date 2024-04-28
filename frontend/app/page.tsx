@@ -1,14 +1,26 @@
 "use client";
 
 import { useState, useEffect, useContext } from "react";
-import { useSynced, DefaultSessionContext, useRemoteToast } from "ws-sync";
+import {
+  useSynced,
+  DefaultSessionContext,
+  useRemoteToast,
+  useSyncedReducer,
+  SyncedReducer,
+} from "ws-sync";
 
 import "allotment/dist/style.css";
 
 import { FaHeart } from "react-icons/fa6";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
 
-import { Chat, ChatAvatar, Messages, initialMessages } from "@/components/chat";
+import {
+  Chat,
+  ChatAvatar,
+  Messages,
+  initialMessages,
+  startStreaming,
+} from "@/components/chat";
 import { toast } from "sonner";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { SidebarLayout } from "@/components/sidebar/layout";
@@ -34,7 +46,31 @@ export default function Home() {
   });
 
   // assistant state
-  const messages = useSynced<Messages>("MESSAGES", initialMessages);
+  const messageReducer: SyncedReducer<Messages> = (
+    draft,
+    action,
+    sync,
+    delegate
+  ) => {
+    switch (action.type) {
+      // triggered by server, handled by local
+      case "SPEAK_MESSAGE":
+        const text = action.text;
+        if (text) {
+          startStreaming(text);
+        }
+        break;
+
+      // triggered by local, handled by server
+      default:
+        delegate();
+    }
+  };
+  const [messages, dispatchMessages] = useSyncedReducer<Messages>(
+    "MESSAGES",
+    messageReducer,
+    initialMessages
+  );
 
   // showroom state
   const showroom = useSynced("SHOWROOM", {
