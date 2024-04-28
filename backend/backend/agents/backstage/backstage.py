@@ -47,11 +47,11 @@ class Backstage:
         try:
             # TODO: parallelize
             await self.filter_extractor.extract_filters(dialog)
-            await self.recommender.extract_preferences(dialog)
+            await self.recommender.update_preferences(dialog)
 
             # update recommendations
             recommendations = await self.filter_extractor.get_all_filtered()
-            # recommendations = await self.preference_extractor.get_sorted(recommendations)
+            recommendations = await self.recommender.get_recommendation(products=recommendations)
             self.recommendations = recommendations
             logger.info(f"#recommendations: {len(recommendations)}")
         except Exception as e:
