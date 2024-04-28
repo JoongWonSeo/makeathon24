@@ -44,6 +44,7 @@ import { createClient } from "@deepgram/sdk";
 const deepgram = createClient("145faac3d565afff8f351eb18c5ce05a082b8a20");
 
 let audioBuffer: string[] = [];
+var aiIsTalking = false;
 // TTS with ElevenLabs API
 export const startStreaming = async (text: String) => {
   const baseUrl = "https://api.elevenlabs.io/v1/text-to-speech";
@@ -72,11 +73,12 @@ export const startStreaming = async (text: String) => {
 
     if (response.status === 200) {
       const audioURL = URL.createObjectURL(response.data);
-      //audioBuffer.push(audioURL);
+      audioBuffer.push(audioURL);
 
       // If there's only one item in the buffer, play it immediately
       if (audioBuffer.length === 1) {
         playAudio();
+        aiIsTalking = true;
       }
     } else {
     }
@@ -95,10 +97,15 @@ const playAudio = () => {
       audioBuffer.shift();
       if (audioBuffer.length > 0) {
         playAudio();
+        aiIsTalking = true;
+      } else {
+        aiIsTalking = false;
+        console.log("done");
       }
     };
 
     audio.play();
+    aiIsTalking = true;
   }
 };
 
@@ -169,38 +176,6 @@ const toolFootnotes = (tool_call: any) => {
       return [];
   }
 };
-
-async function getMicrophone() {
-  const userMedia = await navigator.mediaDevices.getUserMedia({
-    audio: true,
-  });
-
-  return new MediaRecorder(userMedia);
-}
-
-async function openMicrophone(microphone: any, socket: any) {
-  await microphone.start(500);
-
-  microphone.onstart = () => {
-    console.log("client: microphone opened");
-    document.body.classList.add("recording");
-  };
-
-  microphone.onstop = () => {
-    console.log("client: microphone closed");
-    document.body.classList.remove("recording");
-  };
-
-  microphone.ondataavailable = (e: any) => {
-    const data = e.data;
-    console.log("client: sent data to websocket");
-    socket.send(data);
-  };
-}
-
-async function closeMicrophone(microphone: any) {
-  microphone.stop();
-}
 
 const ToolCalls = ({ message }: { message: Message }) => {
   const tool_calls = message.tool_calls!;
@@ -353,6 +328,7 @@ type ChatInputProps = {
   className?: string;
   showroom: any;
 };
+var stringBuffer: any = "";
 
 const ChatInput = ({
   onSend,
@@ -367,42 +343,98 @@ const ChatInput = ({
 
   const [isActivated, setMicActive] = useState(false);
 
+  async function getMicrophone() {
+    const userMedia = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+
+    return new MediaRecorder(userMedia);
+  }
+
+  async function openMicrophone(microphone: any, socket: any) {
+    await microphone.start(500);
+
+    microphone.onstart = () => {
+      console.log("client: microphone opened");
+      document.body.classList.add("recording");
+    };
+
+    microphone.onstop = () => {
+      console.log("client: microphone closed");
+      document.body.classList.remove("recording");
+    };
+
+    microphone.ondataavailable = (e: any) => {
+      const data = e.data;
+      console.log("client: sent data to websocket");
+      if (isGenerating || aiIsTalking) {
+        // send a keepalive message
+        const keepAliveMsg = JSON.stringify({ type: "KeepAlive" });
+        socket.send(keepAliveMsg);
+        return;
+      }
+      socket.send(data);
+    };
+  }
+
+  async function closeMicrophone(microphone: any) {
+    microphone.stop();
+  }
+
+  let microphone: any;
   async function start(socket: any) {
-    let microphone: any;
-    if (isActivated) {
-      await closeMicrophone(microphone);
-      setMicActive(false);
-      return;
-    }
+    // if (isActivated) {
+    //   console.log("client: closing microphone");
+    //   await closeMicrophone(microphone);
+    //   setMicActive(false);
+    //   return;
+    // }
     microphone = await getMicrophone();
     await openMicrophone(microphone, socket);
     setMicActive(true);
   }
+  var socket: any;
 
   const startDG = async () => {
-    const socket = deepgram.listen.live({
+    socket = deepgram.listen.live({
       model: "nova-2",
       smart_format: true,
+      interim_results: true,
+      utterance_end_ms: 1000,
     });
     socket.on("open", async () => {
       console.log("client: connected to websocket");
 
-      socket.on("Results", (data) => {
+      socket.on("UtteranceEnd", (data: any) => {
+        console.log(data);
+        console.log(stringBuffer);
+        onSend(stringBuffer);
+        stringBuffer = "";
+      });
+
+      socket.on("Results", (data: any) => {
         console.log(data);
 
         const transcript = data.channel.alternatives[0].transcript;
 
         console.log(transcript);
-        setInputValue(transcript);
+        if (transcript.trim() !== "") {
+          if (data.is_final) {
+            stringBuffer = stringBuffer + " " + transcript;
+            setInputValue(stringBuffer);
+          } else {
+            setInputValue(stringBuffer + " " + transcript);
+          }
+        }
       });
 
-      socket.on("error", (e) => console.error(e));
+      socket.on("error", (e: any) => console.error(e));
 
-      socket.on("warning", (e) => console.warn(e));
+      socket.on("warning", (e: any) => console.warn(e));
 
-      socket.on("Metadata", (e) => console.log(e));
+      socket.on("Metadata", (e: any) => console.log(e));
 
-      socket.on("close", (e) => console.log(e));
+      socket.on("close", (e: any) => console.log(e));
 
       await start(socket);
     });
