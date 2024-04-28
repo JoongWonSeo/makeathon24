@@ -311,8 +311,9 @@ const ChatInput = ({
 
   return (
     <div>
-      {carList.map((car: any) => (
+      {carList.map((car: any, i: number) => (
         <div
+          key={i}
           className="bg-white w-full border-1 p-[0.8rem] flex items-center "
           onClick={() => {
             const textToSend = `I like the ${car.specs.model} (${car.vehicle_type} • ${car.num_seats} Seats •${car.powertrain_type})`;

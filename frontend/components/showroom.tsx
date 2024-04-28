@@ -160,8 +160,9 @@ const Showroom = ({ showroom }: ShowroomProps) => {
 
               <div className="font-light pb-2">Showing the best 3 options</div>
             </div>
-            {carList.map((car: any) => (
+            {carList.map((car: any, i: number) => (
               <motion.div
+                key={i}
                 layout
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
