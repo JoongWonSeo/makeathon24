@@ -96,6 +96,5 @@ def expose():
     uvicorn.run(
         "backend.server:app",
         port=9000,
-        reload=True,
         host="0.0.0.0",
     )

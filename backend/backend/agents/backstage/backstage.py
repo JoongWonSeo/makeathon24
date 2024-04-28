@@ -26,7 +26,7 @@ class Backstage:
         self.recommender = Recommender()
 
         # state
-        self.recommendations = []
+        self.recommendations = []  # [{"reason":, "car": Product}]
         self.task = None
 
     def append_dialog(self, dealer: str, customer: str):
@@ -38,7 +38,6 @@ class Backstage:
         logger.info(f"Appending dialog:\n{dialog}")
 
         self.task = asyncio.create_task(self.update_recommendations(dialog))
-        
 
     async def update_recommendations(self, dialog):
         """
@@ -51,10 +50,12 @@ class Backstage:
             # wait for both tasks to finish
             await filter_task
             await preference_task
-            
+
             # update recommendations
-            recommendations = await self.filter_extractor.get_all_filtered()
-            recommendations = await self.recommender.get_recommendation(products=recommendations)
+            filtered = await self.filter_extractor.get_all_filtered()
+            recommendations = await self.recommender.get_recommendation(
+                products=filtered
+            )
             self.recommendations = recommendations
             logger.info(f"#recommendations: {len(recommendations)}")
         except Exception as e:
@@ -63,7 +64,7 @@ class Backstage:
         # clear task
         self.task = None
 
-    async def get_recommendations(self, top_k: int = 3):
+    async def get_recommendations(self, top_k: int = 3) -> list[dict]:
         """
         Get a list of recommended products.
 

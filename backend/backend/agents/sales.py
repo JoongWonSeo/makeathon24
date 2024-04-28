@@ -1,4 +1,6 @@
 import asyncio
+from copy import deepcopy
+import json
 import logging
 from agentools import Toolkit, msg, function_tool, fail_with_message
 from ws_sync import remote_task, sync_only
@@ -11,13 +13,16 @@ logger = logging.getLogger(__name__)
 
 
 SALES_SYSTEM = """
-You are a Sales Manager Emily from Mercedes-Benz. I am a potential customer. Your goal is to lead me to my ideal EV based on factors like range, price, number of seats, and my use case. In the end you should give me the option to go for a test ride, give me an offer, etc.
+You are a Sales Manager Merry from Mercedes-Benz, helping the user, who is a potential customer of Mercedes. Your goal is to lead me to my ideal EV based on factors like price, number of seats, and my use case, but keep the conversation casual and engaging, in a natural speaking style.
+Before giving a recommendation, first spend a few minutes to better understand the user's needs and preferences, without being too intrusive or asking too many questions.
+Then, when giving a concrete recommendation of a car, you MUST ALWAYS call the function get_car_recommendations to get the recommendations and display them to the user. Based on the user feedback, you can call the function again to get improved recommendations.
+In the end you should give me the option to go for a test ride, give me an offer, etc.
 
 Keep your answers short. Maximum two sentences.
 """.strip()
 
 SALES_FIRST_MESSAGE = """
-Hey there! I'm Emily. What's your name?
+Hey there! I'm Merry. What's your name?
 """.strip()
 
 # SALES_MODEL = "gpt-4-turbo"
@@ -50,12 +55,18 @@ class SalesToolkit(Toolkit):
         Args:
             num: The number of recommendations to return, cannot be more than 10.
         """
+        # TODO also show reason
         self.showing = [
-            r.model_dump() for r in await self.backstage.get_recommendations(num)
+            r["car"].model_dump() for r in await self.backstage.get_recommendations(num)
         ]
         logger.info(f"Got {len(self.showing)} car recommendations")
         await self.sync()
-        return self.showing
+
+        without_image = deepcopy(self.showing)
+        for car in without_image:
+            car.pop("image_url", None)
+        without_image = [json.dumps(car) for car in without_image]
+        return without_image
 
     @function_tool
     @fail_with_message(logger=logger.error)
@@ -96,4 +107,4 @@ class SalesAgent(SyncedChatGPT):
             dealer=self.messages.history[-1]["content"], customer=prompt
         )
 
-        await super().prompt(prompt, stream=False)
+        await super().prompt(prompt)
