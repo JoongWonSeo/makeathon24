@@ -59,6 +59,7 @@ export const startStreaming = async (text: String) => {
       stability: 0.3,
       similarity_boost: 0.8,
     },
+    // model_id: "eleven_turbo_v2",
   };
 
   try {
@@ -494,6 +495,9 @@ const ChatInput = ({
         />
         <button
           onClick={async () => {
+            // startStreaming(
+            //   "Hey there! I'm Merry, the voice of Mercedes. How can I help you today?"
+            // );
             await startDG();
           }}
           className="m-2 px-0 py-0 "
