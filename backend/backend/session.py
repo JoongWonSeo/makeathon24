@@ -4,6 +4,7 @@ from ws_sync import session_context
 from .agents.sales import SalesAgent
 from .agents.backstage.backstage import Backstage
 from .db.products import product_db
+from .db.users import user_db
 
 
 @asyncinit
@@ -18,7 +19,11 @@ class SessionState:
 
         # initialize the product database
         await product_db.check_exist_and_initialize()
-        # await customer_db.check_exist_and_initialize()
+        await user_db.check_exist_and_initialize()
+        user_data = []
+        async for d in user_db.iterate():
+            user_data.append(d)
+        user_data = user_data[0] if user_data else None
 
-        self.backstage = Backstage(product_db=product_db)
+        self.backstage = Backstage(product_db=product_db, user_data=user_data)
         self.assistant = SalesAgent(backstage=self.backstage)

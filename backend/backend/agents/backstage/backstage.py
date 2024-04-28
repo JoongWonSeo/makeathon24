@@ -2,6 +2,7 @@ import asyncio
 import logging
 from agentools.retrieval.db import EmbeddableDataCollection
 
+from ...db.users import UserData
 from .filter_extractor import FilterExtractor
 from .recommender import Recommender
 
@@ -18,12 +19,12 @@ class Backstage:
     A group of agents that work together to select the best recommendations for the user.
     """
 
-    def __init__(self, product_db: EmbeddableDataCollection):
+    def __init__(self, product_db: EmbeddableDataCollection, user_data: UserData):
         self.product_db = product_db
 
         # agents
         self.filter_extractor = FilterExtractor(product_db=product_db)
-        self.recommender = Recommender()
+        self.recommender = Recommender(user_data=user_data)
 
         # state
         self.recommendations = []  # [{"reason":, "car": Product}]

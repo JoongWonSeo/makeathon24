@@ -36,13 +36,24 @@ VehicleType = OriginalStrEnum(
         "Sedan",
         "Targa",
         "Van",
-        "Wagon"
+        "Wagon",
     ],
 )
 
 Color = OriginalStrEnum(
     "Color",
-    ['Black', 'Gray', 'Silver', 'White', 'Blue', 'Green', 'Red', 'Brown', 'Beige', 'Gold'],
+    [
+        "Black",
+        "Gray",
+        "Silver",
+        "White",
+        "Blue",
+        "Green",
+        "Red",
+        "Brown",
+        "Beige",
+        "Gold",
+    ],
 )
 
 
@@ -74,7 +85,10 @@ class Product(EmbeddableData):
     image_url: list[str]  # media.photo_links
 
 
-# TODO: remove me
-EmbeddableDataCollection.use_global_client()
+if EmbeddableDataCollection.global_client is None:
+    try:
+        EmbeddableDataCollection.use_global_client()
+    except Exception:
+        pass
 
 product_db = EmbeddableDataCollection("PRODUCT_DB", Product, validate=False)

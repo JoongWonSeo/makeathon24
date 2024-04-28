@@ -17,6 +17,9 @@ Gather what you know about the Customer and build up your guess based on the pre
     "new_information": "new information",
     "guess": "your guess based on the new information"
 }}
+
+There is the following web tracking data of the customer available:
+{user_data}
 """.strip()
 
 
