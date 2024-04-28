@@ -28,7 +28,7 @@
             }
           ],
           "default": null,
-          "description": "Check if point has field with a given value",
+          "description": "Check if object has field with a given value",
           "title": "Match"
         },
         "range": {
@@ -41,25 +41,11 @@
             }
           ],
           "default": null,
-          "description": "Check if points value lies in a given range",
+          "description": "Check if objects value lies in a given range",
           "title": "Range"
-        },
-        "values_count": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ValuesCount"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Check number of values of the field"
         }
       },
-      "required": [
-        "key"
-      ],
+      "required": ["key"],
       "title": "FieldCondition",
       "type": "object"
     },
@@ -88,18 +74,6 @@
           "default": null,
           "description": "At least one of those conditions should match",
           "title": "Should"
-        },
-        "min_should": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/MinShould"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "At least minimum amount of given conditions should match"
         },
         "must": {
           "anyOf": [
@@ -174,9 +148,7 @@
           "title": "Any"
         }
       },
-      "required": [
-        "any"
-      ],
+      "required": ["any"],
       "title": "MatchAny",
       "type": "object"
     },
@@ -203,9 +175,7 @@
           "title": "Except"
         }
       },
-      "required": [
-        "except"
-      ],
+      "required": ["except"],
       "title": "MatchExcept",
       "type": "object"
     },
@@ -219,9 +189,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "text"
-      ],
+      "required": ["text"],
       "title": "MatchText",
       "type": "object"
     },
@@ -245,41 +213,8 @@
           "title": "Value"
         }
       },
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "title": "MatchValue",
-      "type": "object"
-    },
-    "MinShould": {
-      "additionalProperties": false,
-      "properties": {
-        "conditions": {
-          "description": "",
-          "items": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/FieldCondition"
-              },
-              {
-                "$ref": "#/$defs/Filter"
-              }
-            ]
-          },
-          "title": "Conditions",
-          "type": "array"
-        },
-        "min_count": {
-          "description": "",
-          "title": "Min Count",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "conditions",
-        "min_count"
-      ],
-      "title": "MinShould",
       "type": "object"
     },
     "PayloadField": {
@@ -292,9 +227,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "key"
-      ],
+      "required": ["key"],
       "title": "PayloadField",
       "type": "object"
     },
@@ -312,7 +245,7 @@
             }
           ],
           "default": null,
-          "description": "point.key &lt; range.lt",
+          "description": "object.key < range.lt",
           "title": "Lt"
         },
         "gt": {
@@ -325,7 +258,7 @@
             }
           ],
           "default": null,
-          "description": "point.key &gt; range.gt",
+          "description": "object.key > range.gt",
           "title": "Gt"
         },
         "gte": {
@@ -338,7 +271,7 @@
             }
           ],
           "default": null,
-          "description": "point.key &gt;= range.gte",
+          "description": "object.key >= range.gte",
           "title": "Gte"
         },
         "lte": {
@@ -351,71 +284,11 @@
             }
           ],
           "default": null,
-          "description": "point.key &lt;= range.lte",
+          "description": "object.key <= range.lte",
           "title": "Lte"
         }
       },
       "title": "Range",
-      "type": "object"
-    },
-    "ValuesCount": {
-      "additionalProperties": false,
-      "description": "Values count filter request",
-      "properties": {
-        "lt": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "point.key.length() &lt; values_count.lt",
-          "title": "Lt"
-        },
-        "gt": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "point.key.length() &gt; values_count.gt",
-          "title": "Gt"
-        },
-        "gte": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "point.key.length() &gt;= values_count.gte",
-          "title": "Gte"
-        },
-        "lte": {
-          "anyOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "point.key.length() &lt;= values_count.lte",
-          "title": "Lte"
-        }
-      },
-      "title": "ValuesCount",
       "type": "object"
     }
   },

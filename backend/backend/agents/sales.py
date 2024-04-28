@@ -48,12 +48,12 @@ class SalesToolkit(Toolkit):
         The recommendations are directly displayed to the user, so you SHOULD NOT repeat them in the chat. Instead, you should ask the user about what they think of the recommendations.
 
         Args:
-            num: The number of recommendations to return.
+            num: The number of recommendations to return, cannot be more than 10.
         """
         self.showing = [
             r.model_dump() for r in await self.backstage.get_recommendations(num)
         ]
-        logger.info(f"Got {len(self.showing)} car recommendations: {self.showing}")
+        logger.info(f"Got {len(self.showing)} car recommendations")
         await self.sync()
         return self.showing
 
@@ -91,11 +91,9 @@ class SalesAgent(SyncedChatGPT):
 
     @remote_task("PROMPT")  # overriding, we need to also re-add the decorator
     async def prompt(self, prompt):
-        asyncio.create_task(
-            # TODO: if the assistant called a function last msg, it should filter it out and merge the whole group together
-            self.backstage.append_dialog(
-                dealer=self.messages.history[-1]["content"], customer=prompt
-            )
+        # TODO: if the assistant called a function last msg, it should filter it out and merge the whole group together
+        self.backstage.append_dialog(
+            dealer=self.messages.history[-1]["content"], customer=prompt
         )
 
         await super().prompt(prompt)

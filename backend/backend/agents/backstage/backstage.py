@@ -2,7 +2,7 @@ import asyncio
 import logging
 from agentools.retrieval.db import EmbeddableDataCollection
 
-from .constraint_extractor import ConstraintExtractor
+from .filter_extractor import FilterExtractor
 
 logger = logging.getLogger(__name__)
 
@@ -21,14 +21,14 @@ class Backstage:
         self.product_db = product_db
 
         # agents
-        self.constraint_extractor = ConstraintExtractor(product_db=product_db)
+        self.filter_extractor = FilterExtractor(product_db=product_db)
         # self.preference_extractor = PreferenceExtractor(product_db=product_db)
 
         # state
         self.recommendations = []
         self.task = None
 
-    async def append_dialog(self, dealer: str, customer: str):
+    def append_dialog(self, dealer: str, customer: str):
         """
         A new piece of Dealer <=> Customer dialog, which can be used to update the recommendations.
         """
@@ -42,14 +42,18 @@ class Backstage:
         """
         Update the recommendations based on the given dialog.
         """
-        # TODO: parallelize
-        await self.constraint_extractor.extract_requirements(dialog)
-        # await self.preference_extractor.extract_preferences(dialog)
+        try:
+            # TODO: parallelize
+            await self.filter_extractor.extract_filters(dialog)
+            # await self.preference_extractor.extract_preferences(dialog)
 
-        # update recommendations
-        recommendations = await self.constraint_extractor.get_all_filtered()
-        # recommendations = await self.preference_extractor.get_sorted(recommendations)
-        self.recommendations = recommendations
+            # update recommendations
+            recommendations = await self.filter_extractor.get_all_filtered()
+            # recommendations = await self.preference_extractor.get_sorted(recommendations)
+            self.recommendations = recommendations
+            logger.info(f"#recommendations: {len(recommendations)}")
+        except Exception as e:
+            logger.error(f"Error updating recommendations: {repr(e)}", exc_info=True)
 
         # clear task
         self.task = None
@@ -62,5 +66,6 @@ class Backstage:
             top_k: The number of recommendations to return.
         """
         if self.task:
+            # TODO: set max timeout, so at least we can still show the old recommendations
             await self.task
         return self.recommendations[:top_k]
