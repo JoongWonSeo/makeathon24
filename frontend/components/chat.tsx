@@ -50,7 +50,7 @@ export const startStreaming = async (text: String) => {
   const baseUrl = "https://api.elevenlabs.io/v1/text-to-speech";
   const headers = {
     "Content-Type": "application/json",
-    "xi-api-key": "ce7e76d856ff7e5f5c4dc929e258c0c6",
+    "xi-api-key": "d6346d2e66b335b9a4137ed91484326d",
   };
 
   const requestBody = {
@@ -64,7 +64,7 @@ export const startStreaming = async (text: String) => {
 
   try {
     const response = await axios.post(
-      `${baseUrl}/GA39yKeJ4dBzsFLMDfnB`,
+      `${baseUrl}/w7eU8DkZtRvmBPU0ACXn`,
       requestBody,
       {
         headers,
