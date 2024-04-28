@@ -72,7 +72,7 @@ export const startStreaming = async (text: String) => {
 
     if (response.status === 200) {
       const audioURL = URL.createObjectURL(response.data);
-      audioBuffer.push(audioURL);
+      //audioBuffer.push(audioURL);
 
       // If there's only one item in the buffer, play it immediately
       if (audioBuffer.length === 1) {

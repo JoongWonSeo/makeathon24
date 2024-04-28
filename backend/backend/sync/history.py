@@ -28,7 +28,7 @@ class SyncedMessageHistory(MessageHistory):
         # called by the assistant
         message = self.ensure_dict(message)
         self._history.append(message)
-        if message.get("role") == "assistant":
+        if message.get("role") == "assistant" and message.get("content"):
             await self.sync.send_action({"type": "SPEAK_MESSAGE", "text": message["content"]})
         await self.sync()
 
