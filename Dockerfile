@@ -39,6 +39,7 @@ RUN --mount=type=cache,target=/python-packages-cache poetry install --no-interac
 
 # Frontend builder
 FROM ${NODE_VERSION} AS frontend-builder
+RUN apk add g++ make py3-pip
 
 # Set the working directory in the container
 WORKDIR app/frontend/
@@ -68,18 +69,12 @@ RUN if getent group $GID ; then echo 'group exists' ; else groupadd -g $GID cont
 USER $UID
 WORKDIR /app/backend
 
-# NLTK uses this directory to store the downloaded data
-RUN mkdir -p /nltk_data && chown -R $UID:$GID /nltk_data && chmod -R 777 /nltk_data
-
 # Copy the .venv, and set up any dependencies that need to be installed in the local container
 COPY --from=backend-builder /app/backend/.venv /app/backend/.venv
 
 # Set environment variables to ensure Python uses the packages from the app/backend/.venv directory
 ENV PATH="/app/backend/.venv/bin:$PATH"
 ENV PYTHONPATH="/app/backend/.venv/lib/python3.11/site-packages"
-
-# pre-download the nltk data
-RUN python -m nltk.downloader -d /nltk_data punkt averaged_perceptron_tagger
 
 # Copy the compiled frontend code and the rest of the code from the backend-builder and frontend-builder containers to the local container
 COPY --from=backend-builder /app/backend /app/backend
@@ -88,6 +83,9 @@ COPY --from=frontend-builder /app/frontend /app/frontend
 
 # Create the storage directory with the correct permissions
 RUN mkdir -p storage/qdrant && chown -R $UID:$GID storage/qdrant && chmod -R 777 storage/qdrant
+
+# Expose the port the app runs on
+EXPOSE 9000
 
 # Run the backend server
 CMD ["python", "-m", "uvicorn", "backend.server:app", "--host", "0.0.0.0", "--port", "9000", "--reload"]

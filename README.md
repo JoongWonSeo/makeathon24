@@ -13,3 +13,11 @@ npm run build
 ```
 
 2. Then, please follow the instructions in the backend/README.md to install and run the backend.
+
+## With Docker
+
+If you have docker installed, the following should build and run the app, then expose it on port 9000:
+
+```bash
+docker rm merry; docker build . --tag merry && docker run --name merry -p 9000:9000 merry
+```
